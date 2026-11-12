@@ -1,1 +1,864 @@
-<!DOCTYPEhtml><html lang="en"><head><meta charset="UTF-8"><meta name="viewport"content="width=device-width,initial-scale=1.0"><title>Burger Inventory Count App</title><style>:root{--primary:#d35400;--secondary:#2c3e50;--accent:#27ae60;--light:#f8f9fa;--dark:#1a1a2e;--card:#fff;--border:#ddd;--text:#333;--total-bg:#fff3cd;--danger:#e74c3c;--tab-inactive:#e9ecef;--tab-active:#fff}[data-theme=dark]{--primary:#e67e22;--secondary:#ecf0f1;--accent:#2ecc71;--light:#16213e;--dark:#0f0f23;--card:#1e2a47;--border:#34495e;--text:#e0e0e0;--total-bg:#2c2a4d;--tab-inactive:#2a3558;--tab-active:#1e2a47}*{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif}body{background:var(--light);color:var(--text);padding:20px;line-height:1.6;transition:all .3s ease}.container{max-width:900px;margin:0 auto}header{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:25px;border-radius:10px;margin-bottom:25px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}header h1{font-size:1.6rem}.theme-toggle{background:#fff;color:var(--primary);border:none;padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:600;transition:.3s}.theme-toggle:hover{transform:scale(1.05)}.meta-bar,.input-card,.results-section,.history-section{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:15px 20px;margin-bottom:25px}.meta-bar{display:flex;flex-wrap:wrap;gap:20px;align-items:center}label{font-weight:600}input,select{padding:8px 12px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text);width:100%}.input-card h2{color:var(--primary);margin-bottom:20px;font-size:1.2rem}.search-box{margin-bottom:15px}.tabs{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:20px;gap:2px}.tab-btn{padding:10px 14px;background:var(--tab-inactive);border:none;border-top-left-radius:6px;border-top-right-radius:6px;cursor:pointer;font-weight:500;color:var(--text);transition:all .2s ease;margin-bottom:-1px}.tab-btn.active{background:var(--tab-active);border:1px solid var(--border);border-bottom-color:var(--tab-active);border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom:none;font-weight:600}.tab-btn:hover{background:var(--tab-active)}.tab-content{display:none}.tab-content.active{display:block}.form-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:20px}.form-group{flex:1;min-width:160px}button{padding:10px 20px;border:none;border-radius:5px;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .2s ease}button:hover{transform:translateY(-1px)}.btn-add{background:var(--accent);color:#fff}.btn-clear-one{background:var(--danger);color:#fff;padding:4px 8px;font-size:.8rem}.btn-primary{background:var(--primary);color:#fff}.btn-secondary{background:var(--secondary);color:#fff}.btn-warning{background:#f39c12;color:#fff}.added-items h3{font-size:1rem;margin-bottom:10px;color:var(--secondary)}.category-group{margin-bottom:15px}.category-group h4{font-size:.95rem;color:var(--primary);padding-bottom:4px;border-bottom:1px solid var(--border);margin-bottom:6px}.item-entry{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--total-bg);border-radius:4px;margin-bottom:5px;flex-wrap:wrap;gap:8px}.entry-total{font-weight:bold;display:flex;align-items:center;gap:6px}.edit-qty-input{width:70px;padding:2px 6px;font-size:.9rem;text-align:center}.empty-note,.empty-history{color:#888;font-style:italic;padding:10px;text-align:center}.notification{background:var(--accent);color:#fff;padding:8px 12px;border-radius:4px;margin-bottom:12px;display:none;animation:fadeIn .3s ease}@keyframes fadeIn{0%{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}.button-bar{display:flex;flex-wrap:wrap;gap:10px;margin:25px 0}.results-section{display:none;padding:25px;margin-top:30px}.results-section.show{display:block}.results-header{text-align:center;margin-bottom:25px;padding-bottom:15px;border-bottom:2px solid var(--primary)}.results-header h2{color:var(--primary)}.results-meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;font-size:.95rem}.results-category{margin-bottom:20px}.results-category h3{color:var(--primary);border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px}.results-item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--border)}.results-grand-total{margin-top:20px;padding:12px;background:var(--total-bg);border-radius:5px;font-size:1.1rem;font-weight:bold;display:flex;justify-content:space-between}.history-section{margin-top:30px;padding:20px}.history-section h2{color:var(--primary);margin-bottom:15px}.history-item{padding:12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}.history-item:last-child{border-bottom:none}.history-info{flex:1}.history-actions button{padding:5px 10px;font-size:.85rem;margin-left:5px}@media print{body{background:#fff;color:#000}.button-bar,.theme-toggle,.input-card,.history-section,.meta-bar{display:none!important}.results-section{display:block!important;border:none;box-shadow:none}}</style></head><body><div class="container"><header><h1>🍔 Burger Inventory Count</h1><button class="theme-toggle"id="themeToggle">🌙 Dark Mode</button></header><div class="meta-bar"><div><label>Date & Time:</label><input type="text"id="reportDate"readonly></div><div><label>Prepared By:</label><input type="text"id="preparedBy"placeholder="Enter your name..."></div></div><div class="notification"id="notification"></div><div class="input-card"><h2>📝 Add Item Count</h2><div class="search-box"><input type="text"id="itemSearch"placeholder="🔍 Search items across all categories..."></div><div class="tabs"id="categoryTabs"></div><div id="tabContents"></div><div class="form-row"><div class="form-group"><label>Item</label><select id="itemSelect"><option value="">-- Select Item First --</option></select></div><div class="form-group"><label>Count</label><input type="number"id="countInput"placeholder="0"min="1"step="1"></div><button class="btn-add"id="addBtn">➕ Add Count</button></div><div class="added-items"><h3>📋 Added Items <span style="font-weight:normal;font-size:.85rem;color:#888">(Click quantity to edit directly)</span></h3><div id="addedList"><p class="empty-note">No items added yet.</p></div></div></div><div class="button-bar"><button class="btn-primary"id="submitBtn">✅ Submit Report</button><button class="btn-secondary"id="printPdfBtn">📄 Print / Save as PDF</button><button class="btn-secondary"id="saveTxtBtn">📝 Save as TXT</button><button class="btn-warning"id="clearFormBtn">🗑️ Clear All</button></div><div class="results-section"id="resultsSection"><div class="results-header"><h2>📊 INVENTORY REPORT</h2></div><div class="results-meta"><div><strong>Date & Time:</strong> <span id="resDate"></span></div><div><strong>Prepared By:</strong> <span id="resPreparedBy"></span></div></div><div id="resultsContent"></div><div class="results-grand-total"><span>TOTAL ITEMS COUNTED</span><span id="resGrandTotal">0</span></div></div><div class="history-section"><h2>🕓 Saved History</h2><div id="historyList"><p class="empty-history">No saved history yet.</p></div></div></div><script>const itemsData={BUNS:['Value','Double','Brioche','Hotdog'],PATTIES:['Value','Chicken','Premium','Steak','Crispy Chicken','Veggie','Cheesydog','Franks','Hungarian','Bacon Strips'],DRINKS:['Black Lemon Tea','Fruitwist','Iced Choco','Choco Mallows','Iced Coffee','Hot Coffee','Mineral Water'],SIDES_EXTRAS:['Cheese','Egg','Farmer','Fries','Nuggets'],SAUCE_DRESSING:['Caramelized Onion','Mushroom','Black Pepper Sauce','Bacon Cheese Sauce','Premium Coleslaw','Steak Dressing','Steak Roasted','Steak Tomato Ketchup','Cheddar Cheese','Beef Shawarma Dressing','Shawarma Cheese Sauce','French Onion','Hungarian Mayo','Hungarian Ketchup','Roasted Sesame Dressing','Roasted Cabbage','Chimi Mayo','Chimi Sauce','Pickled Onion','Sisig Sauce','Chicken Chicharon','Cheesy Sauce','Chicken Dressing Single','Chicken Dressing Double','MB Dressing'],OTHERS:['Fries','Powder','BBQ Powder','Cheese Powder','Salted','Hot Sauce','Catsup'],CUPS:['16oz','8oz'],LIDS:['16oz','8oz'],PAPER_BAG:['Small','Medium','Large']};const categoryLabels={BUNS:'🍔 BUNS',PATTIES:'🥩 PATTIES',DRINKS:'🥤 DRINKS',SIDES_EXTRAS:'🍟 SIDES & EXTRAS',SAUCE_DRESSING:'🥫 SAUCE / DRESSING',OTHERS:'📦 OTHERS',CUPS:'🥤 CUPS',LIDS:'🧢 LIDS',PAPER_BAG:'🛍️ PAPER BAG'};let inventoryData={},savedHistory=[],activeCategory='BUNS';document.addEventListener('DOMContentLoaded',()=>{setCurrentDate();loadFromLocalStorage();buildTabs();setupEventListeners();renderItemSelect();renderAddedList();renderHistory();});function setCurrentDate(){const n=new Date();document.getElementById('reportDate').value=n.toLocaleString('en-US',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});}function loadFromLocalStorage(){const d=localStorage.getItem('inventoryData'),h=localStorage.getItem('inventoryHistory'),n=localStorage.getItem('preparedBy');if(d)inventoryData=JSON.parse(d);if(h)savedHistory=JSON.parse(h);if(n)document.getElementById('preparedBy').value=n;}function saveToLocalStorage(){localStorage.setItem('inventoryData',JSON.stringify(inventoryData));localStorage.setItem('preparedBy',document.getElementById('preparedBy').value);}function saveHistoryToStorage(){localStorage.setItem('inventoryHistory',JSON.stringify(savedHistory));}function showNotification(m){const n=document.getElementById('notification');n.textContent=m;n.style.display='block';setTimeout(()=>n.style.display='none',2500);}function buildTabs(){const tabsContainer=document.getElementById('categoryTabs'),contentContainer=document.getElementById('tabContents');tabsContainer.innerHTML='';contentContainer.innerHTML='';Object.keys(itemsData).forEach(cat=>{const btn=document.createElement('button');btn.className='tab-btn'+(cat===activeCategory?' active':'');btn.textContent=categoryLabels[cat];btn.dataset.category=cat;btn.addEventListener('click',()=>switchTab(cat));tabsContainer.appendChild(btn);const content=document.createElement('div');content.className='tab-content'+(cat===activeCategory?' active':'');content.dataset.category=cat;content.innerHTML=`<p style="color:#888;font-size:.9rem;margin-bottom:10px">${itemsData[cat].length} items available</p><div style="display:flex;flex-wrap:wrap;gap:8px">${itemsData[cat].map(i=>`<button class="item-btn" data-item="${i}" data-cat="${cat}" style="padding:6px 10px;border:1px solid var(--border);background:var(--card);border-radius:4px;cursor:pointer;font-size:.85rem">${i}</button>`).join('')}</div>`;contentContainer.appendChild(content);});contentContainer.querySelectorAll('.item-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.getElementById('itemSelect').value=btn.dataset.item;switchTab(btn.dataset.cat);});});}function switchTab(cat){activeCategory=cat;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.category===cat));document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active',c.dataset.category===cat));renderItemSelect();}function renderItemSelect(){const sel=document.getElementById('itemSelect');sel.innerHTML='<option value="">-- Select Item --</option>';if(itemsData[activeCategory])itemsData[activeCategory].forEach(i=>{const o=document.createElement('option');o.value=i;o.textContent=i;sel.appendChild(o);});}function setupEventListeners(){document.getElementById('themeToggle').addEventListener('click',()=>{const b=document.body,t=document.getElementById('themeToggle');b.getAttribute('data-theme')==='dark'?(b.removeAttribute('data-theme'),t.textContent='🌙 Dark Mode'):(b.setAttribute('data-theme','dark'),t.textContent='☀️ Light Mode');});document.getElementById('itemSearch').addEventListener('input',e=>{const q=e.target.value.toLowerCase().trim(),sel=document.getElementById('itemSelect');sel.innerHTML='<option value="">-- Select Item --</option>';if(!q){renderItemSelect();return;}let firstCat=null;Object.keys(itemsData).forEach(cat=>{itemsData[cat].filter(i=>i.toLowerCase().includes(q)).forEach(i=>{const o=document.createElement('option');o.value=i;o.textContent=`${categoryLabels[cat]} - ${i}`;o.dataset.cat=cat;sel.appendChild(o);if(!firstCat)firstCat=cat;});});if(firstCat&&q)switchTab(firstCat);});document.getElementById('addBtn').addEventListener('click',addCount);document.getElementById('countInput').addEventListener('keypress',e=>{if(e.key==='Enter')addCount();});document.getElementById('submitBtn').addEventListener('click',generateReport);document.getElementById('printPdfBtn').addEventListener('click',()=>{if(!document.querySelector('.results-section.show'))return alert('Please submit the report first.');window.print();});document.getElementById('saveTxtBtn').addEventListener('click',saveAsTxt);document.getElementById('clearFormBtn').addEventListener('click',()=>{if(confirm('Clear ALL added items? This cannot be undone.')){inventoryData={};saveToLocalStorage();renderAddedList();document.getElementById('resultsSection').classList.remove('show');showNotification('All items cleared.');}});}function addCount(){const i=document.getElementById('itemSelect').value,n=parseInt(document.getElementById('countInput').value)||0;let c=activeCategory;const selOpt=document.getElementById('itemSelect').selectedOptions[0];if(selOpt&&selOpt.dataset.cat)c=selOpt.dataset.cat;if(!i)return alert('Please select an item.');if(n<1)return alert('Please enter a valid number (minimum 1).');if(!inventoryData[c])inventoryData[c]={};const p=inventoryData[c][i]||0;inventoryData[c][i]=p+n;saveToLocalStorage();renderAddedList();showNotification(`✅ ${i}: +${n} → Total: ${inventoryData[c][i]}`);document.getElementById('countInput').value='';document.getElementById('itemSelect').value='';}function renderAddedList(){const c=document.getElementById('addedList'),cats=Object.keys(inventoryData);if(cats.length===0){c.innerHTML='<p class="empty-note">No items added yet.</p>';return;}let htm='';cats.forEach(cat=>{htm+=`<div class="category-group"><h4>${categoryLabels[cat]||cat}</h4>`;Object.keys(inventoryData[cat]).forEach(i=>{const t=inventoryData[cat][i];htm+=`<div class="item-entry"><span>${i}</span><span class="entry-total">Total: <input type="number" class="edit-qty-input" value="${t}" min="1" data-cat="${cat}" data-item="${i}"><button class="btn-clear-one" data-cat="${cat}" data-item="${i}">✕</button></span></div>`;});htm+='</div>';});c.innerHTML=htm;c.querySelectorAll('.edit-qty-input').forEach(inp=>{inp.addEventListener('change',()=>{const ct=inp.getAttribute('data-cat'),
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burger Inventory POS Style</title>
+    <style>
+        :root {
+            --primary: #22c55e;
+            --primary-dark: #16a34a;
+            --secondary: #facc15;
+            --secondary-dark: #eab308;
+            --accent: #60a5fa;
+            --accent-light: #93c5fd;
+            --light: #f0f9ff;
+            --card: #ffffff;
+            --border: #cbd5e1;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --danger: #ef4444;
+            --hover: #e0f2fe;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --radius: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light), #e0f2fe);
+            min-height: 100vh;
+            padding: 16px;
+            color: var(--text);
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .top-bar {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .top-bar h1 {
+            font-size: 1.4rem;
+            color: var(--primary);
+        }
+
+        .meta-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .meta-item input {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 0.9rem;
+            background: transparent;
+            color: var(--text);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 16px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .panel {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .panel h2 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-light);
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .cat-btn {
+            background: var(--accent-light);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text);
+            transition: all 0.2s ease;
+        }
+
+        .cat-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(34, 197, 94, 0.3);
+        }
+
+        .cat-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .item-card {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .item-card:hover {
+            border-color: var(--primary);
+            background: var(--hover);
+            transform: translateY(-2px);
+        }
+
+        .item-card.selected {
+            border-color: var(--primary);
+            background: #dcfce7;
+        }
+
+        .item-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .input-row input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-yellow {
+            background: var(--secondary);
+            color: #854d0e;
+        }
+
+        .btn-blue {
+            background: var(--accent);
+            color: #ffffff;
+        }
+
+        .btn-red {
+            background: var(--danger);
+            color: #ffffff;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .added-list {
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 6px;
+            background: var(--light);
+            margin-bottom: 6px;
+        }
+
+        .list-item .item-info {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .list-item .qty {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .list-item input {
+            width: 60px;
+            padding: 4px 6px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .list-item .del-btn {
+            background: var(--danger);
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, var(--secondary), var(--secondary-dark));
+            color: #854d0e;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-top: 12px;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-section {
+            display: none;
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .results-header h2 {
+            color: var(--primary);
+        }
+
+        .results-meta {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .results-category {
+            margin-bottom: 16px;
+        }
+
+        .results-category h3 {
+            color: var(--accent);
+            font-size: 1rem;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .results-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        @media print {
+            body {
+                background: #ffffff;
+            }
+            .top-bar, .main-grid, .button-row, .notification {
+                display: none !important;
+            }
+            .results-section {
+                display: block !important;
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification"></div>
+
+    <div class="app-container">
+        <div class="top-bar">
+            <h1>🍔 Burger Inventory Count</h1>
+            <div class="meta-row">
+                <div class="meta-item">
+                    <label>Date & Time:</label>
+                    <input type="text" id="reportDate" readonly>
+                </div>
+                <div class="meta-item">
+                    <label>Prepared By:</label>
+                    <input type="text" id="preparedBy" placeholder="Enter your name...">
+                </div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Left Sidebar: Added Items -->
+            <div class="sidebar">
+                <div class="panel">
+                    <h2>📋 Added Items</h2>
+                    <div class="list-header">
+                        <span>Item</span>
+                        <span>Qty</span>
+                    </div>
+                    <div class="added-list" id="addedList">
+                        <p class="empty-state">No items added yet.</p>
+                    </div>
+                    <div class="total-row">
+                        <span>Total Items Counted</span>
+                        <span id="grandTotal">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Categories & Items -->
+            <div class="panel">
+                <h2>🛒 Select Items</h2>
+
+                <!-- Category Buttons -->
+                <div class="category-grid" id="categoryTabs"></div>
+
+                <!-- Search -->
+                <input type="text" class="search-input" id="itemSearch" placeholder="🔍 Search items...">
+
+                <!-- Items Grid -->
+                <div class="items-grid" id="itemsGrid">
+                    <p class="empty-state">Select a category to view items.</p>
+                </div>
+
+                <!-- Quantity Input & Add Button -->
+                <div class="input-row">
+                    <input type="number" id="countInput" placeholder="Quantity" min="1" value="1">
+                    <button class="btn btn-primary" id="addBtn">➕ Add</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-row">
+            <button class="btn btn-blue" id="submitBtn">✅ Submit Report</button>
+            <button class="btn btn-outline" id="printBtn">🖨️ Print Report</button>
+            <button class="btn btn-outline" id="saveTxtBtn">📄 Save as TXT</button>
+            <button class="btn btn-yellow" id="clearBtn">🗑️ Clear All</button>
+        </div>
+
+        <!-- Results / Report Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>📊 INVENTORY REPORT</h2>
+            </div>
+            <div class="results-meta">
+                <div><strong>Date & Time:</strong> <span id="resDate"></span></div>
+                <div><strong>Prepared By:</strong> <span id="resPreparedBy"></span></div>
+            </div>
+            <div id="resultsContent"></div>
+            <div class="total-row" style="margin-top: 20px;">
+                <span>Total Items Counted</span>
+                <span id="resGrandTotal">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Complete Items Data
+        const itemsData = {
+            BUNS: ['Value', 'Double', 'Brioche', 'Hotdog'],
+            PATTIES: ['Value', 'Chicken', 'Premium', 'Steak', 'Crispy Chicken', 'Veggie', 'Cheesydog', 'Franks', 'Hungarian', 'Bacon Strips'],
+            DRINKS: ['Black Lemon Tea', 'Fruitwist', 'Iced Choco', 'Choco Mallows', 'Iced Coffee', 'Hot Coffee', 'Mineral Water'],
+            SIDES_EXTRAS: ['Cheese', 'Egg', 'Farmer', 'Fries', 'Nuggets'],
+            SAUCE_DRESSING: ['Caramelized Onion', 'Mushroom', 'Black Pepper Sauce', 'Bacon Cheese Sauce', 'Premium Coleslaw', 'Steak Dressing', 'Steak Roasted', 'Steak Tomato Ketchup', 'Cheddar Cheese', 'Beef Shawarma Dressing', 'Shawarma Cheese Sauce', 'French Onion', 'Hungarian Mayo', 'Hungarian Ketchup', 'Roasted Sesame Dressing', 'Roasted Cabbage', 'Chimi Mayo', 'Chimi Sauce', 'Pickled Onion', 'Sisig Sauce', 'Chicken Chicharon', 'Cheesy Sauce', 'Chicken Dressing Single', 'Chicken Dressing Double', 'MB Dressing'],
+            OTHERS: ['Fries', 'Powder', 'BBQ Powder', 'Cheese Powder', 'Salted', 'Hot Sauce', 'Catsup'],
+            CUPS: ['16oz', '8oz'],
+            LIDS: ['16oz', '8oz'],
+            PAPER_BAG: ['Small', 'Medium', 'Large']
+        };
+
+        const categoryLabels = {
+            BUNS: '🍔 BUNS',
+            : '🥩 PATTIES',
+    DRINKS: '🥤 DRINKS',
+    SIDES_EXTRAS: '🍟 SIDES & EXTRAS',
+    SAUCE_DRESSING: '🥫 SAUCE / DRESSING',
+    OTHERS: '📦 OTHERS',
+    CUPS: '🥤 CUPS',
+    LIDS: '🧢 LIDS',
+    PAPER_BAG: '🛍️ PAPER BAG'
+};
+
+let inventoryData = {};
+let activeCategory = 'BUNS';
+let selectedItem = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    setCurrentDate();
+    loadFromLocalStorage();
+    buildCategoryButtons();
+    renderItems();
+    renderAddedList();
+    setupEventListeners();
+});
+
+function setCurrentDate() {
+    const now = new Date();
+    document.getElementById('reportDate').value = now.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+}
+
+function loadFromLocalStorage() {
+    const saved = localStorage.getItem('inventoryData');
+    const savedName = localStorage.getItem('preparedBy');
+    if (saved) inventoryData = JSON.parse(saved);
+    if (savedName) document.getElementById('preparedBy').value = savedName;
+}
+
+function saveToLocalStorage() {
+    localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
+    localStorage.setItem('preparedBy', document.getElementById('preparedBy').value);
+}
+
+function showNotification(message) {
+    const notif = document.getElementById('notification');
+    notif.textContent = message;
+    notif.style.display = 'block';
+    setTimeout(() => {
+        notif.style.display = 'none';
+    }, 2500);
+}
+
+function buildCategoryButtons() {
+    const container = document.getElementById('categoryTabs');
+    container.innerHTML = '';
+    
+    Object.keys(itemsData).forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-btn' + (cat === activeCategory ? ' active' : '');
+        btn.textContent = categoryLabels[cat];
+        btn.dataset.category = cat;
+        btn.addEventListener('click', () => switchCategory(cat));
+        container.appendChild(btn);
+    });
+}
+
+function switchCategory(category) {
+    activeCategory = category;
+    selectedItem = null;
+    buildCategoryButtons();
+    document.getElementById('itemSearch').value = '';
+    renderItems();
+}
+
+function renderItems(searchTerm = '') {
+    const container = document.getElementById('itemsGrid');
+    container.innerHTML = '';
+
+    let itemsToShow = itemsData[activeCategory] || [];
+    
+    if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        itemsToShow = [];
+        Object.keys(itemsData).forEach(cat => {
+            itemsData[cat].filter(item => item.toLowerCase().includes(term)).forEach(item => {
+                itemsToShow.push(item);
+            });
+        });
+    }
+
+    if (itemsToShow.length === 0) {
+        container.innerHTML = '<p class="empty-state">No items found.</p>';
+        return;
+    }
+
+    itemsToShow.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'item-card' + (selectedItem === item ? ' selected' : '');
+        card.innerHTML = `<span class="item-name">${item}</span>`;
+        card.addEventListener('click', () => selectItem(item));
+        container.appendChild(card);
+    });
+}
+
+function selectItem(item) {
+    selectedItem = item;
+    renderItems(document.getElementById('itemSearch').value);
+    showNotification(`Selected: ${item}`);
+}
+
+function setupEventListeners() {
+    document.getElementById('itemSearch').addEventListener('input', (e) => {
+        renderItems(e.target.value.trim());
+    });
+
+    document.getElementById('addBtn').addEventListener('click', addItem);
+
+    document.getElementById('countInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addItem();
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', generateReport);
+
+    document.getElementById('printBtn').addEventListener('click', () => {
+        if (!document.querySelector('.results-section.show')) {
+            alert('Please submit the report first.');
+            return;
+        }
+        window.print();
+    });
+
+    document.getElementById('saveTxtBtn').addEventListener('click', saveAsTxt);
+
+    document.getElementById('clearBtn').addEventListener('click', () => {
+        if (confirm('Clear ALL added items? This cannot be undone.')) {
+            inventoryData = {};
+            saveToLocalStorage();
+            renderAddedList();
+            document.getElementById('resultsSection').classList.remove('show');
+            showNotification('All items cleared.');
+        }
+    });
+}
+
+function addItem() {
+    if (!selectedItem) {
+        alert('Please select an item first.');
+        return;
+    }
+
+    const qty = parseInt(document.getElementById('countInput').value) || 0;
+    if (qty < 1) {
+        alert('Please enter a valid quantity (minimum 1).');
+        return;
+    }
+
+    if (!inventoryData[activeCategory]) {
+        inventoryData[activeCategory] = {};
+    }
+
+    const previous = inventoryData[activeCategory][selectedItem] || 0;
+    inventoryData[activeCategory][selectedItem] = previous + qty;
+
+    saveToLocalStorage();
+    renderAddedList();
+    showNotification(`✅ ${selectedItem}: +${qty} → Total: ${inventoryData[activeCategory][selectedItem]}`);
+
+    document.getElementById('countInput').value = 1;
+    selectedItem = null;
+    renderItems(document.getElementById('itemSearch').value);
+}
+
+function renderAddedList() {
+    const container = document.getElementById('addedList');
+    const cats = Object.keys(inventoryData);
+    let grandTotal = 0;
+
+    if (cats.length === 0) {
+        container.innerHTML = '<p class="empty-state">No items added yet.</p>';
+        document.getElementById('grandTotal').textContent = '0';
+        return;
+    }
+
+    let html = '';
+    cats.forEach(cat => {
+        Object.keys(inventoryData[cat]).forEach(item => {
+            const qty = inventoryData[cat][item];
+            grandTotal += qty;
+            html += `
+                <div class="list-item">
+                    <div class="item-info">${item}</div>
+                    <div class="qty">
+                        <input type="number" value="${qty}" min="1" 
+                            data-cat="${cat}" data-item="${item}"
+                            onchange="updateQuantity(this)">
+                        <button class="del-btn" data-cat="${cat}" data-item="${item}"
+                            onclick="removeItem(this)">✕</button>
+                    </div>
+                </div>
+            `;
+        });
+    });
+
+    container.innerHTML = html;
+    document.getElementById('grandTotal').textContent = grandTotal;
+}
+
+function updateQuantity(input) {
+    const cat = input.getAttribute('data-cat');
+    const item = input.getAttribute('data-item');
+    const newQty = parseInt(input.value) || 1;
+    
+    if (newQty < 1) {
+        input.value = 1;
+        return;
+    }
+
+    inventoryData[cat][item] = newQty;
+    saveToLocalStorage();
+    recalculateTotal();
+    showNotification(`🔄 ${item} quantity updated to ${newQty}`);
+}
+
+function removeItem(btn) {
+    const cat = btn.getAttribute('data-cat');
+    const item = btn.getAttribute('data-item');
+    
+    if (confirm(`Remove "${item}" from list?`)) {
+        delete inventoryData[cat][item];
+        if (Object.keys(inventoryData[cat]).length === 0) {
+            delete inventoryData[cat];
+        }
+        saveToLocalStorage();
+        renderAddedList();
+        showNotification(`🗑️ Removed: ${item}`);
+    }
+}
+
+function recalculateTotal() {
+    let total = 0;
+    Object.keys(inventoryData).forEach(cat => {
+        Object.values(inventoryData[cat]).forEach(qty => {
+            total += qty;
+        });
+    });
+    document.getElementById('grandTotal').textContent = total;
+}
+
+function generateReport() {
+    const reportDate = document.getElementById('reportDate').value;
+    const preparedBy = document.getElementById('preparedBy').value || 'Not Provided';
+    const cats = Object.keys(inventoryData);
+    
+    if (cats.length === 0) {
+        alert('No items counted yet. Please add items first.');
+        return;
+    }
+
+    document.getElementById('resDate').textContent = reportDate;
+    document.getElementById('resPreparedBy').textContent = preparedBy;
+
+    let html = '';
+    let grandTotal = 0;
+
+    cats.forEach(cat => {
+        const items = Object.keys(inventoryData[cat]);
+        html += `
+            <div class="results-category">
+                <h3>${categoryLabels[cat] || cat}</h3>
+        `;
+        items.forEach(item => {
+            const qty = inventoryData[cat][item];
+            grandTotal += qty;
+            html += `
+                <div class="results-item">
+                    <span>${item}</span>
+                    <span>${qty}</span>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    });
+
+    document.getElementById('resultsContent').innerHTML = html;
+    document.getElementById('resGrandTotal').textContent = grandTotal;
+    document.getElementById('resultsSection').classList.add('show');
+    
+    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+    showNotification('✅ Report generated successfully!');
+}
+
+function saveAsTxt() {
+    const reportDate = document.getElementById('reportDate').value;
+    const preparedBy = document.getElementById('preparedBy').value || 'Not Provided';
+    const cats = Object.keys(inventoryData);
+    
+    if (cats.length === 0) {
+        alert('No items counted yet. Please add items first.');
+        return;
+    }
+
+    let text = '========================================\n';
+    text += '         BURGER INVENTORY REPORT\n';
+    text += '========================================\n\n';
+    text += `Date & Time: ${reportDate}\n`;
+    text += `Prepared By: ${preparedBy}\n\n`;
+    text += '----------------------------------------\n\n';
+
+    let grandTotal = 0;
+    cats.forEach(cat => {
+        text += `${categoryLabels[cat] || cat}:\n`;
+        Object.keys(inventoryData[cat]).forEach(item => {
+            const qty = inventoryData[cat][item];
+            grandTotal += qty;
+            text += `  ${item}: ${qty}\n`;
+        });
+        text += '\n';
+    });
+
+    text += '----------------------------------------\n';
+    text += `TOTAL ITEMS COUNTED: ${grandTotal}\n`;
+    text += '========================================\n';
+
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Inventory_Report_${new Date().toISOString().slice(0,10)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showNotification('📄 Report saved as text file!');
+}
+    </script>
+</body>
+</html>
+
+
+          
