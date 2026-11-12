@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burger Inventory Count App</title>
+    <style>
+        :root {
+            --primary: #d35400;
+            --secondary: #2c3e50;
+            --accent: #27ae60;
+            --light: #f8f9fa;
+            --dark: #1a1a2e;
+            --card: #ffffff;
+            --border: #ddd;
+            --text: #333;
+            --total-bg: #fff3cd;
+            --danger: #e74c3c;
+        }
+
+        [data-theme="dark"] {
+            --primary: #e67e22;
+            --secondary: #ecf0f1;
+            --accent: #2ecc71;
+            --light: #16213e;
+            --dark: #0f0f23;
+            --card: #1e2a47;
+            --border: #34495e;
+            --text: #e0e0e0;
+            --total-bg: #2c2a4d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--light);
+            color: var(--text);
+            padding: 20px;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+        }
+
+        .theme-toggle {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .meta-bar {
+            background: var(--card);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .meta-bar label {
+            font-weight: 600;
+        }
+
+        .meta-bar input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            background: transparent;
+            color: var(--text);
+        }
+
+        .input-card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .input-card h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            background: transparent;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-add {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-clear-one {
+            background: var(--danger);
+            color: white;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .added-items {
+            margin-top: 20px;
+        }
+
+        .added-items h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .category-group {
+            margin-bottom: 15px;
+        }
+
+        .category-group h4 {
+            font-size: 0.95rem;
+            color: var(--primary);
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 6px;
+        }
+
+        .item-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--total-bg);
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+
+        .entry-total {
+            font-weight: bold;
+        }
+
+        .empty-note {
+            color: #888;
+            font-style: italic;
+            padding: 10px;
+        }
+
+        .button-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 25px 0;
+        }
+
+        .results-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .results-header h2 {
+            color: var(--primary);
+        }
+
+        .results-meta {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .results-category {
+            margin-bottom: 20px;
+        }
+
+        .results-category h3 {
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .results-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .results-grand-total {
+            margin-top: 20px;
+            padding: 12px;
+            background: var(--total-bg);
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .history-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .history-section h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .history-item {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-info {
+            flex: 1;
+        }
+
+        .history-actions button {
+            padding: 5px 10px;
+            font-size: 0.85rem;
+            margin-left: 5px;
+        }
+
+        .empty-history {
+            text-align: center;
+            color: #888;
+            padding: 20px;
+        }
+
+        @media print {
+            body { background: white; color: black; }
+            .button-bar, .theme-toggle, .input-card, .history-section, .meta-bar { display: none !important; }
+            .results-section { display: block !important; border: none; box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍔 Burger Inventory Count</h1>
+            <button class="theme-toggle" id="themeToggle">🌙 Dark Mode</button>
+        </header>
+
+        <!-- META INFO -->
+        <div class="meta-bar">
+            <div>
+                <label>Date & Time:</label>
+                <input type="text" id="reportDate" readonly>
+            </div>
+            <div>
+                <label>Prepared By:</label>
+                <input type="text" id="preparedBy" placeholder="Enter your name...">
+            </div>
+        </div>
+
+        <!-- INPUT CARD -->
+        <div class="input-card">
+            <h2>📝 Add Item Count</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="categorySelect">
+                        <option value="">-- Select Category --</option>
+                        <option value="BUNS">🍔 BUNS</option>
+                        <option value="PATTIES">🥩 PATTIES</option>
+                        <option value="DRINKS">🥤 DRINKS</option>
+                        <option value="SIDES_EXTRAS">🍟 SIDES & EXTRAS</option>
+                        <option value="SAUCE_DRESSING">🥫 SAUCE / DRESSING</option>
+                        <option value="OTHERS">📦 OTHERS</option>
+                        <option value="CUPS">🥤 CUPS</option>
+                        <option value="LIDS">🧢 LIDS</option>
+                        <option value="PAPER_BAG">🛍️ PAPER BAG</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Item</label>
+                    <select id="itemSelect">
+                        <option value="">-- Select Item First --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Count</label>
+                    <input type="number" id="countInput" placeholder="0" min="0">
+                </div>
+                <button class="btn-add" id="addBtn">➕ Add Count</button>
+            </div>
+
+            <!-- ADDED ITEMS LIST -->
+            <div class="added-items">
+                <h3>📋 Added Counts</h3>
+                <div id="addedList">
+                    <p class="empty-note">No items added yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="button-bar">
+            <button class="btn-primary" id="submitBtn">✅ Submit Report</button>
+            <button class="btn-secondary" id="printPdfBtn">📄 Print / Save as PDF</button>
+            <button class="btn-secondary" id="saveTxtBtn">📝 Save as TXT</button>
+            <button class="btn-warning" id="clearFormBtn">🗑️ Clear All</button>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>📊 INVENTORY REPORT</h2>
+            </div>
+            <div class="results-meta">
+                <div><strong>Date & Time:</strong> <span id="resDate"></span></div>
+                <div><strong>Prepared By:</strong> <span id="resPreparedBy"></span></div>
+            </div>
+            <div id="resultsContent"></div>
+            <div class="results-grand-total">
+                <span>GRAND TOTAL</span>
+                <span id="resGrandTotal">0</span>
+            </div>
+        </div>
+
+        <!-- HISTORY SECTION -->
+        <div class="history-section">
+            <h2>🕓 Saved History</h2>
+            <div id="historyList">
+                <p class="empty-history">No saved history yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // DATA: ALL CATEGORIES & ITEMS
+        // ==========================================
+        const itemsData = {
+            BUNS: ['Value', 'Double', 'Brioche', 'Hotdog'],
+            PATTIES: ['Value', 'Chicken', 'Premium', 'Steak', 'Crispy Chicken', 'Veggie', 'Cheesydog', 'Franks', 'Hungarian', 'Bacon Strips'],
+            DRINKS: ['Black Lemon Tea', 'Fruitwist', 'Iced Choco', 'Choco Mallows', 'Iced Coffee', 'Hot Coffee', 'Mineral Water'],
+            SIDES_EXTRAS: ['Cheese', 'Egg', 'Farmer', 'Fries', 'Nuggets'],
+            SAUCE_DRESSING: [
+                'Caramelized Onion', 'Mushroom', 'Black Pepper Sauce', 'Bacon Cheese Sauce',
+                'Premium Coleslaw', 'Steak Dressing', 'Steak Roasted', 'Steak Tomato Ketchup',
+                'Cheddar Cheese', 'Beef Shawarma Dressing', 'Shawarma Cheese Sauce', 'French Onion',
+                'Hungarian Mayo', 'Hungarian Ketchup', 'Roasted Sesame Dressing', 'Roasted Cabbage',
+                'Chimi Mayo', 'Chimi Sauce', 'Pickled Onion', 'Sisig Sauce', 'Chicken Chicharon',
+                'Cheesy Sauce', 'Chicken Dressing Single', 'Chicken Dressing Double', 'MB Dressing'
+            ],
+            OTHERS: ['Fries', 'Powder', 'BBQ Powder', 'Cheese Powder', 'Salted', 'Hot Sauce', 'Catsup'],
+            CUPS: ['16oz', '8oz'],
+            LIDS: ['16oz', '8oz'],
+            PAPER_BAG: ['Small', 'Medium', 'Large']
+        };
+
+        const categoryLabels = {
+            BUNS: '🍔 BUNS',
+            PATTIES: '🥩 PATTIES',
+            DRINKS: '🥤 DRINKS',
+            SIDES_EXTRAS: '🍟 SIDES & EXTRAS',
+            SAUCE_DRESSING: '🥫 SAUCE / DRESSING',
+            OTHERS: '📦 OTHERS',
+            CUPS: '🥤 CUPS',
+            LIDS: '🧢 LIDS',
+            PAPER_BAG: '🛍️ PAPER BAG'
+        };
+
+        // ==========================================
+        // STATE
+        // ==========================================
+        let inventoryData = {}; // { category: { item: totalCount } }
+        let savedHistory = [];
+
+        // ==========================================
+        // INIT
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            setCurrentDate();
+            loadFromLocalStorage();
+            setupEventListeners();
+            renderAddedList();
+            renderHistory();
+        });
+
+        function setCurrentDate() {
+            const now = new Date();
+            document.getElementById('reportDate').value = now.toLocaleString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+            });
+        }
+
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem('inventoryData');
+            const savedHist = localStorage.getItem('inventoryHistory');
+            const savedName = localStorage.getItem('preparedBy');
+            
+            if (savedData) inventoryData = JSON.parse(savedData);
+            if (savedHist) savedHistory = JSON.parse(savedHist);
+            if (savedName) document.getElementById('preparedBy').value = savedName;
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
+            localStorage.setItem('preparedBy', document.getElementById('preparedBy').value);
+        }
+
+        function saveHistoryToStorage() {
+            localStorage.setItem('inventoryHistory', JSON.stringify(savedHistory));
+        }
+
+        function setupEventListeners() {
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                const body = document.body;
+                const toggle = document.getElementById('themeToggle');
+                if (body.getAttribute('data-theme') === 'dark') {
+                    body.setAttribute('data-theme', 'light');
+                    toggle.textContent = '🌙 Dark Mode';
+                } else {
+                    body.setAttribute('data-theme', 'dark');
+                    toggle.textContent = '☀️ Light Mode';
+                }
+            });
+
+            // Category change → populate items
+            document.getElementById('categorySelect').addEventListener('change', (e) => {
+                const cat = e.target.value;
+                const itemSelect = document.getElementById('itemSelect');
+                itemSelect.innerHTML = '<option value="">-- Select Item --</option>';
+                if (cat && itemsData[cat]) {
+                    itemsData[cat].forEach(item => {
+                        const opt = document.createElement('option');
+                        opt.value = item;
+                        opt.textContent = item;
+                        itemSelect.appendChild(opt);
+                    });
+                }
+            });
+
+            // Add count
+            document.getElementById('addBtn').addEventListener('click', addCount);
+            document.getElementById('countInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addCount();
+            });
+
+            // Submit report
+            document.getElementById('submitBtn').addEventListener('click', generateReport);
+
+            // Print/PDF
+            document.getElementById('printPdfBtn').addEventListener('click', () => {
+                if (!document.querySelector('.results-section.show')) {
+                    alert('Please submit the report first.');
+                    return;
+                }
+                window.print();
+            });
+
+            // Save as TXT
+            document.getElementById('saveTxtBtn').addEventListener('click', saveAsTxt);
+
+            // Clear form
+            document.getElementById('clearFormBtn').addEventListener('click', () => {
+                if (confirm('Clear all added items? This cannot be undone.')) {
+                    inventoryData = {};
+                    saveToLocalStorage();
+                    renderAddedList();
+                    document.getElementById('resultsSection').classList.remove('show');
+                }
+            });
+        }
+
+        function addCount() {
+            const cat = document.getElementById('categorySelect').value;
+            const item = document.getElementById('itemSelect').value;
+            const count = parseInt(document.getElementById('countInput').value) || 0;
+
+            if (!cat) { alert('Please select a category.'); return; }
+            if (!item) { alert('Please select an item.'); return; }
+            if (count <= 0) { alert('Please enter a valid number greater than 0.'); return; }
+
+            if (!inventoryData[cat]) inventoryData[cat] = {};
+            inventoryData[cat][item] = (inventoryData[cat][item] || 0) + count;
+
+            saveToLocalStorage();
+            renderAddedList();
+
+            // Reset inputs
+            document.getElementById('countInput').value = '';
+        }
+
+        function renderAddedList() {
+            const container = document.getElementById('addedList');
+            const cats = Object.keys(inventoryData);
+            
+            if (cats.length === 0) {
+                container.innerHTML = '<p class="empty-note">No items added yet.</p>';
+                return;
+            }
+
+            let html = '';
+            cats.forEach(cat => {
+                html += `<div class="category-group">
+                    <h4>${categoryLabels[cat] || cat}</h4>`;
+                Object.keys(inventoryData[cat]).forEach(item => {
+                    const total = inventoryData[cat][item];
+                    html += `<div class="item-entry">
+                        <span>${item}</span>
+                        <span class="entry-total">Total: ${total}
+                            <button class="btn-clear-one" data-cat="${cat}" data-item="${item}">✕</button>
+                        </span>
+                    </div>`;
+                });
+                html += '</div>';
+            });
+            container.innerHTML = html;
+
+            // Attach remove listeners
+            container.querySelectorAll('.btn-clear-one').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const c = btn.getAttribute('data-cat');
+                    const i = btn.getAttribute('data-item');
+                    delete inventoryData[c][i];
+                    if (Object.keys(inventoryData[c]).length === 0) delete inventoryData[c];
+                    saveToLocalStorage();
+                    renderAddedList();
+                });
+            });
+        }
+
+        function generateReport() {
+            const preparedBy = document.getElementById('preparedBy').value || 'Not Specified';
+            const reportDate = document.getElementById('reportDate').value;
+            
+            if (Object.keys(inventoryData).length === 0) {
+                alert('Please add at least one item before submitting.');
+                return;
+            }
+
+            document.getElementById('resDate').textContent = reportDate;
+            document.getElementById('resPreparedBy').textContent = preparedBy;
+
+            let content = '';
+            let grandTotal = 0;
+
+            Object.keys(inventoryData).forEach(cat => {
+                content += `<div class="results-category">
+                    <h3>${categoryLabels[cat] || cat}</h3>`;
+                let catTotal = 0;
+                Object.keys(inventoryData[cat]).forEach(item => {
+                    const qty = inventoryData[cat][item];
+                    catTotal += qty;
+                    content += `<div class="results-item">
+                        <span>${item}</span>
+                        <span>${qty}</span>
+                    </div>`;
+                });
+                content += `<div class="results-item" style="font-weight:600; border-top:1px solid var(--border); padding-top:6px;">
+                    <span>Subtotal</span>
+                    <span>${catTotal}</span>
+                </div></div>`;
+                grandTotal += catTotal;
+            });
+
+            document.getElementById('resultsContent').innerHTML = content;
+            document.getElementById('resGrandTotal').textContent = grandTotal.toLocaleString();
+            document.getElementById('resultsSection').classList.add('show');
+
+            // Save to history
+            const record = {
+                id: Date.now(),
+                date: reportDate,
+                preparedBy: preparedBy,
+                data: JSON.parse(JSON.stringify(inventoryData)),
+                grandTotal: grandTotal
+            };
+            savedHistory.unshift(record);
+            if (savedHistory.length > 20) savedHistory = savedHistory.slice(0, 20); // keep last 20
+            saveHistoryToStorage();
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            if (savedHistory.length === 0) {
+                container.innerHTML = '<p class="empty-history">No saved history yet.</p>';
+                return;
+            }
+
+            container.innerHTML = savedHistory.map(rec => `
+                <div class="history-item">
+                    <div class="history-info">
+                        <div><strong>${rec.date}</strong></div>
+                        <div>By: ${rec.preparedBy} | Grand Total: ${rec.grandTotal.toLocaleString()}</div>
+                    </div>
+                    <div class="history-actions">
+                        <button onclick="loadHistoryRecord(${rec.id})">📋 Load</button>
+                        <button onclick="deleteHistoryRecord(${rec.id})">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.loadHistoryRecord = function(id) {
+            const rec = savedHistory.find(r => r.id === id);
+            if (rec) {
+                if (confirm('Replace current data with this record?')) {
+                    inventoryData = rec.data;
+                    document.getElementById('preparedBy').value = rec.preparedBy;
+                    saveToLocalStorage();
+                    renderAddedList();
+                    document.getElementById('resultsSection').classList.remove('show');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+        };
+
+        window.deleteHistoryRecord = function(id) {
+            if (confirm('Delete this record?')) {
+                savedHistory = savedHistory.filter(r => r.id !== id);
+                saveHistoryToStorage();
+                renderHistory();
+            }
+        };
+
+        function saveAsTxt() {
+            const preparedBy = document.getElementById('preparedBy').value || 'Not Specified';
+            const reportDate = document.getElementById('reportDate').value;
+            
+            if (Object.keys(inventoryData).length === 0) {
+                alert('Please add at least one item first.');
+                return;
+            }
+
+            let text = '=========================================\n';
+            text += '         BURGER INVENTORY COUNT\n';
+            text += '=========================================\n';
+            text += `Date & Time: ${reportDate}\n`;
+            text += `Prepared By: ${preparedBy}\n`;
+            text += '-----------------------------------------\n\n';
+
+            let grandTotal = 0;
+            Object.keys(inventoryData).forEach(cat => {
+                text += `[${(categoryLabels[cat] || cat).replace(/[^\w\s/]/g, '')}]\n`;
+                let catTotal = 0;
+                Object.keys(inventoryData[cat]).forEach(item => {
+                    const qty = inventoryData[cat][item];
+                    catTotal += qty;
+                    text += `  ${item.padEnd(35)} ${qty}\n`;
+                });
+                text += `  ${'---'.padEnd(35)} ---\n`;
+                text += `  Subtotal${' '.repeat(25)} ${catTotal}\n\n`;
+                grandTotal += catTotal;
+            });
+
+            text += '=========================================\n';
+            text += `GRAND TOTAL${' '.repeat(24)} ${grandTotal}\n`;
+            text += '=========================================\n';
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `Inventory_${new Date().toISOString().slice(0,10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+        }
+    </script>
+</body>
+</html>
